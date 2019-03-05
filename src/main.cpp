@@ -32,8 +32,8 @@ Servo ServoLeft;
 int LeftServoPin = 10;
 int RightServoPin = 11;
 int ReadDelay = 30; // Ultrasonic sensor ping delay
-byte left = 0;      // Left angle request
-byte right = 0;     // Right angle request
+byte left = 90;      // Left angle request
+byte right = 90;     // Right angle request
 
 short table[] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //0->8
 
@@ -178,7 +178,7 @@ void doSteer(Servo servoR, Servo servoL)
 
 void setup()
 {
-    Serial.begin(9600);
+    //Serial.begin(9600);
 
     Wire.begin(i2cAddress);
     Wire.onRequest(requestData);
@@ -196,5 +196,5 @@ void loop()
 
     //steeringSweep(ServoRight);
     //steeringSweep(ServoLeft);
-    delay(100);
+    delay(10);
 }
