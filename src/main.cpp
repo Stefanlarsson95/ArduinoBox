@@ -96,7 +96,7 @@ void sonicPing()
 {
     for (byte i = 0; i < 9; i++)
     {
-        table[i] = UDS[i].distanceInCm();
+        table[i] = constrain(UDS[i].distanceInCm(),-1,255);
         delay(ReadDelay);
     }
 }
