@@ -55,7 +55,7 @@ void receiveData(int byteRecieved)
         Serial.print("  Right:");
         Serial.println(right);
     }
-    doSteer(); 
+    doSteer();
 }
 
 // Initialize UltraDistSensor
@@ -96,7 +96,7 @@ void sonicPing()
 {
     for (byte i = 0; i < 9; i++)
     {
-        table[i] = constrain(UDS[i].distanceInCm(),-1,255);
+        table[i] = constrain(UDS[i].distanceInCm(), -1, 32767); // con
         delay(ReadDelay);
     }
 }
