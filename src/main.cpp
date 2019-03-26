@@ -8,17 +8,24 @@ UltraDistSensor UDS[9];
 Servo ServoRight;
 Servo ServoLeft;
 
-#define i2cAddress 0x35 // slave adress
-#define wheelbase 54    // wheelbase dim for calculating Ackermann geometry.
-#define steerGuard 11   // Guardvalue recieved befor steering data
+#define i2cAddress 0x35 // Slave adress
+#define steerGuard 11   // Guardvalue recieved befor steering data.
 #define ReadDelay 20    // Ultrasonic sensor ping delay (millisecond)
 
 int LeftServoPin = 10;
 int RightServoPin = 11;
 
-byte left = 90;  // Left angle request
-byte right = 90; // Right angle request
-short table[9];  // Table of distances
+int sensors[9] = {6, 4, 8, 5, 7, 2, 12, 3, 9}; // Order of sensors.
+byte left = 90;                                // Left angle request
+byte right = 90;                               // Right angle request
+short table[9];                                // Table of distances
+
+// Actuate steer request
+void doSteer()
+{
+    ServoRight.write(right);
+    ServoLeft.write(left);
+}
 
 //  On request return table of distances.
 void requestData()
@@ -48,12 +55,12 @@ void receiveData(int byteRecieved)
         Serial.print("  Right:");
         Serial.println(right);
     }
+    doSteer(); 
 }
 
 // Initialize UltraDistSensor
 void initUDS()
 {
-    int sensors[9] = {6, 4, 8, 5, 7, 2, 12, 3, 9};
     for (byte i = 0; i < 9; i++)
     {
         UDS[i].attach(sensors[i]);
@@ -94,31 +101,25 @@ void sonicPing()
     }
 }
 
-// Actuate steer request
-void doSteer()
-{
-    ServoRight.write(right);
-    ServoLeft.write(left);
-}
-
 void setup()
 {
     Serial.begin(115200);
-    Serial.println("----Initialized---");
-    delay(100);
+
+    // Setup I2C communication.
     Wire.begin(i2cAddress);
     Wire.onRequest(requestData);
     Wire.onReceive(receiveData);
-
+    // Initialize Hardware.
     initUDS();
-    //initSteering(RightServoPin, LeftServoPin);
+    initSteering(RightServoPin, LeftServoPin);
+    // Actuate steer.
+    doSteer();
 }
 
 void loop()
 {
+    //Read sensors.
     sonicPing();
     Print();
-    //doSteer();
-
-    delay(50);
+    //delay(30);
 }
